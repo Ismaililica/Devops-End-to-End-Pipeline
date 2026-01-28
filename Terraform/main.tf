@@ -5,8 +5,8 @@ resource "aws_instance" "demo-server" {
   key_name               = "dpp"
   subnet_id              = aws_subnet.devops-project-public-subnet-01.id
   vpc_security_group_ids = [aws_security_group.ssh-sg.id]
-  
-  for_each = toset(["Jenkins-master","Build-slave","Ansible"])
+
+  for_each = toset(["Jenkins-master", "Build-slave", "Ansible"])
   tags = {
     Name = "${each.key}"
   }
@@ -25,6 +25,14 @@ resource "aws_security_group" "ssh-sg" {
 
 
 
+  }
+
+  ingress {
+
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
