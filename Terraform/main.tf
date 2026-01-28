@@ -3,7 +3,7 @@ resource "aws_instance" "demo-server" {
   instance_type          = "t3.micro"
   ami                    = "ami-01fd6fa49060e89a6"
   key_name               = "dpp"
-  subnet_id              = aws_subnet.devops-project-public-subnet.id
+  subnet_id              = aws_subnet.devops-project-public-subnet-01.id
   vpc_security_group_ids = [aws_security_group.ssh-sg.id]
   
   for_each = toset(["Jenkins-master","Build-slave","Ansible"])
@@ -108,12 +108,12 @@ resource "aws_route_table" "devops-project-route-table" {
 resource "aws_route_table_association" "devops-project-rtasc-01" {
 
   route_table_id = aws_route_table.devops-project-route-table.id
-  subnet_id      = aws_subnet.devops-project-public-subnet.id
+  subnet_id      = aws_subnet.devops-project-public-subnet-01.id
 
 }
 
 resource "aws_route_table_association" "devops-project-rtasc-02" {
   subnet_id      = aws_subnet.devops-project-public-subnet-02.id
-  route_table_id = aws_route_table.devops-project-route-table
+  route_table_id = aws_route_table.devops-project-route-table.id
 
 }
