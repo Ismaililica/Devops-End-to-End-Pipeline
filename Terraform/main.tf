@@ -1,18 +1,20 @@
 resource "aws_instance" "demo-server" {
 
-  instance_type   = "t3.micro"
-  ami             = "ami-04233b5aecce09244"
-  key_name        = "dpp"
-  subnet_id       = "subnet-05540b2a592348cfc"
+  instance_type          = "t3.micro"
+  ami                    = "ami-01fd6fa49060e89a6"
+  key_name               = "dpp"
+  subnet_id              = aws_subnet.devops-project-public-subnet.id
   vpc_security_group_ids = [aws_security_group.ssh-sg.id]
-
-
+  
+  for_each = toset(["Jenkins-master","Build-slave","Ansible"])
   tags = {
-    Name = "EC2-V1"
+    Name = "${each.key}"
   }
 
 }
 resource "aws_security_group" "ssh-sg" {
+
+  vpc_id = aws_vpc.devops-project-vpc.id
 
   ingress {
 
@@ -46,32 +48,45 @@ resource "aws_vpc" "devops-project-vpc" {
 
   tags = {
 
-    Name="devops-project-vpc" 
+    Name = "devops-project-vpc"
   }
-  
+
 
 }
 
-resource "aws_subnet" "devops-project-public-subnet" {
+resource "aws_subnet" "devops-project-public-subnet-01" {
 
-  vpc_id = aws_vpc.devops-project-vpc.id
-  cidr_block = "10.1.1.0/24"
+  vpc_id                  = aws_vpc.devops-project-vpc.id
+  cidr_block              = "10.1.1.0/24"
   map_public_ip_on_launch = true
-  availability_zone = "eu-north-1a"
+  availability_zone       = "eu-north-1a"
 
   tags = {
-    Name="devops-project-public-subnet"
+    Name = "devops-project-public-subnet"
   }
-  
+
+}
+
+resource "aws_subnet" "devops-project-public-subnet-02" {
+  vpc_id                  = aws_vpc.devops-project-vpc.id
+  cidr_block              = "10.1.2.0/24"
+  availability_zone       = "eu-north-1b"
+  map_public_ip_on_launch = true
+
+  tags = {
+
+    Name = "devops-project-public-subnet-02"
+  }
+
 }
 
 resource "aws_internet_gateway" "devops-project-igw" {
   vpc_id = aws_vpc.devops-project-vpc.id
 
   tags = {
-    Name="devops-project-igw"
+    Name = "devops-project-igw"
   }
-  
+
 }
 
 resource "aws_route_table" "devops-project-route-table" {
@@ -82,17 +97,23 @@ resource "aws_route_table" "devops-project-route-table" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.devops-project-igw.id
   }
-  
+
   tags = {
 
-   Name="devops_project-route-table" 
+    Name = "devops_project-route-table"
   }
-  
+
 }
 
-resource "aws_route_table_association" "devops-project-rtasc" {
+resource "aws_route_table_association" "devops-project-rtasc-01" {
 
   route_table_id = aws_route_table.devops-project-route-table.id
-  subnet_id = aws_subnet.devops-project-public-subnet.id
-  
+  subnet_id      = aws_subnet.devops-project-public-subnet.id
+
+}
+
+resource "aws_route_table_association" "devops-project-rtasc-02" {
+  subnet_id      = aws_subnet.devops-project-public-subnet-02.id
+  route_table_id = aws_route_table.devops-project-route-table
+
 }
