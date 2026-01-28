@@ -4,7 +4,7 @@ resource "aws_instance" "demo-server" {
   ami             = "ami-04233b5aecce09244"
   key_name        = "dpp"
   subnet_id       = "subnet-05540b2a592348cfc"
-  security_groups = ["ssh-sg"]
+  vpc_security_group_ids = [aws_security_group.ssh-sg.id]
 
 
   tags = {
@@ -38,4 +38,61 @@ resource "aws_security_group" "ssh-sg" {
     Name = "ssh-sg"
   }
 
+}
+
+resource "aws_vpc" "devops-project-vpc" {
+
+  cidr_block = "10.1.0.0/16"
+
+  tags = {
+
+    Name="devops-project-vpc" 
+  }
+  
+
+}
+
+resource "aws_subnet" "devops-project-public-subnet" {
+
+  vpc_id = aws_vpc.devops-project-vpc.id
+  cidr_block = "10.1.1.0/24"
+  map_public_ip_on_launch = true
+  availability_zone = "eu-north-1a"
+
+  tags = {
+    Name="devops-project-public-subnet"
+  }
+  
+}
+
+resource "aws_internet_gateway" "devops-project-igw" {
+  vpc_id = aws_vpc.devops-project-vpc.id
+
+  tags = {
+    Name="devops-project-igw"
+  }
+  
+}
+
+resource "aws_route_table" "devops-project-route-table" {
+
+  vpc_id = aws_vpc.devops-project-vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.devops-project-igw.id
+  }
+  
+  tags = {
+
+   Name="devops_project-route-table" 
+  }
+  
+}
+
+resource "aws_route_table_association" "devops-project-rtasc" {
+
+  route_table_id = aws_route_table.devops-project-route-table.id
+  subnet_id = aws_subnet.devops-project-public-subnet.id
+  
 }
