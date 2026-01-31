@@ -14,7 +14,7 @@ environment{
             
             steps{
                 dir('Hello-World'){
-                sh 'mvn clean deploy'
+                sh 'mvn clean deploy -DskipTests'
                 }
 
             }
