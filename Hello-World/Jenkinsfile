@@ -31,11 +31,11 @@ environment{
          }
 
          steps{
-
+            dir("Hello-World"){
             withSonarQubeEnv('sonarqube-server'){
                 sh "${scannerHome}/bin/sonar-scanner"
             }
-         
+         }
          
          }
 
