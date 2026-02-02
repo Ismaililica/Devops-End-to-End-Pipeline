@@ -38,7 +38,7 @@ environment{
     steps {
         withSonarQubeEnv('sonarqube-server') {
             sh """
-              mvn clean verify sonar:sonar \
+              mvn  sonar:sonar \
               -DskipTests \
               -Dsonar.projectKey=Ismaililica_Devops-End-to-End-Pipeline
             """
