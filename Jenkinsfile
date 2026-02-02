@@ -48,11 +48,19 @@ environment{
 
         stage("Quality Gate") {
     steps {
-        timeout(time: 5, unit: 'MINUTES') {
-            waitForQualityGate abortPipeline: true
+        script {
+            timeout(time: 5, unit: 'MINUTES') {
+                def qg = waitForQualityGate()
+                echo "Quality Gate status: ${qg.status}"
+
+                if (qg.status != 'OK') {
+                    error "Pipeline stopped due to Quality Gate: ${qg.status}"
+                }
+            }
         }
     }
 }
+
 
 
     }
