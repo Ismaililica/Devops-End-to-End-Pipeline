@@ -34,23 +34,17 @@ environment{
         }
 
 
-        stage("SonarQube analysis"){
-
-         environment{
-
-            scannerHome= tool 'iso-sonarqube-scanner'
-         }
-
-         steps{
-            
-            withSonarQubeEnv('sonarqube-server'){
-                sh "${scannerHome}/bin/sonar-scanner"
-            }
-        
-         
-         }
-
-
+        stage("SonarQube analysis") {
+    steps {
+        withSonarQubeEnv('sonarqube-server') {
+            sh """
+              mvn clean verify sonar:sonar \
+              -DskipTests \
+              -Dsonar.projectKey=Ismaililica_Devops-End-to-End-Pipeline
+            """
         }
+    }
+}
+
     }
 }
