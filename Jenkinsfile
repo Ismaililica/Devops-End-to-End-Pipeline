@@ -13,11 +13,11 @@ environment{
         stage("build"){
             
             steps{
-                dir('Hello-World'){
+                
                 echo "--------build started--------"
                 sh 'mvn clean deploy -DskipTests'
                 echo "--------build completed--------"
-                }
+               
 
             }
 
@@ -42,11 +42,11 @@ environment{
          }
 
          steps{
-            dir("Hello-World"){
+            
             withSonarQubeEnv('sonarqube-server'){
                 sh "${scannerHome}/bin/sonar-scanner"
             }
-         }
+        
          
          }
 
