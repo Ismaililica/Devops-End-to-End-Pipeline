@@ -16,3 +16,6 @@ override.tf.json
 
 # Local .terraform directories
 **/.terraform/*
+./target/*
+
+

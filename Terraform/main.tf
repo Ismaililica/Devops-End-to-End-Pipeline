@@ -6,12 +6,34 @@ resource "aws_instance" "demo-server" {
   subnet_id              = aws_subnet.devops-project-public-subnet-01.id
   vpc_security_group_ids = [aws_security_group.ssh-sg.id]
 
-  for_each = toset(["Jenkins-master", "Build-slave", "Ansible"])
+  for_each = toset(["Build-slave", "Ansible"])
   tags = {
     Name = "${each.key}"
   }
 
 }
+
+resource "aws_instance" "jenkins-master" {
+
+  instance_type          = "t3.medium"
+  ami                    = "ami-01fd6fa49060e89a6"
+  key_name               = "dpp"
+  subnet_id              = aws_subnet.devops-project-public-subnet-01.id
+  vpc_security_group_ids = [aws_security_group.ssh-sg.id]
+
+  tags = {
+
+    Name = "Jenkins-Master"
+
+  }
+
+}
+
+
+
+
+
+
 resource "aws_security_group" "ssh-sg" {
 
   vpc_id = aws_vpc.devops-project-vpc.id
@@ -37,14 +59,42 @@ resource "aws_security_group" "ssh-sg" {
 
   egress {
 
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
 
   }
+  egress {
 
- 
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+
+  }
+  egress {
+
+    from_port   = 53
+    to_port     = 53
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
+
+  }
+  egress {
+    from_port   = 53
+    to_port     = 53
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+
 
   tags = {
     Name = "ssh-sg"
