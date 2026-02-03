@@ -6,9 +6,8 @@ resource "aws_instance" "demo-server" {
   subnet_id              = aws_subnet.devops-project-public-subnet-01.id
   vpc_security_group_ids = [aws_security_group.ssh-sg.id]
 
-  for_each = toset(["Build-slave", "Ansible"])
   tags = {
-    Name = "${each.key}"
+    Name = "Ansible"
   }
 
 }
@@ -28,6 +27,23 @@ resource "aws_instance" "jenkins-master" {
   }
 
 }
+
+resource "aws_instance" "build-slave" {
+
+  instance_type          = "t3.small"
+  ami                    = "ami-01fd6fa49060e89a6"
+  key_name               = "dpp"
+  subnet_id              = aws_subnet.devops-project-public-subnet-01.id
+  vpc_security_group_ids = [aws_security_group.ssh-sg.id]
+
+  tags = {
+
+    Name = "Build-slave"
+
+  }
+
+}
+
 
 
 
