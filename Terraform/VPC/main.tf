@@ -204,4 +204,4 @@ resource "aws_route_table_association" "devops-project-rtasc-02" {
        vpc_id     =     aws_vpc.devops-project-vpc.id
        subnet_ids = [aws_subnet.devops-project-public-subnet-01.id,aws_subnet.devops-project-public-subnet-02.id]
        sg_ids = module.sgs.security_group_public
- }
+ } 
