@@ -1,6 +1,6 @@
 def registry = 'https://ismaililica.jfrog.io/'
 def imageName = 'ismaililica.jfrog.io/iso-docker-local/devops-project-o2'
-def version = '2.1.2'
+def version = '2.1.3'
 pipeline {
     agent {
         node{
@@ -119,20 +119,19 @@ environment{
               
               echo '---------------------Docker Publish End-------------------------'
              }
-
-
-
         }
-
-
-
-
-
-
-
-
     }
  
+    /*stage("Deploy"){
+
+     steps{
+        script{
+
+            sh './deploy.sh'
+        }
+     }
+    }
+    */
 
 
 
